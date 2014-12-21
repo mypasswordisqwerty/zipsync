@@ -42,7 +42,24 @@ namespace zipsync {
         int res=mkDirs(path);
         if (res)
             return res;
-        scanDir("");
+        string pth="";
+        if (flags.rootDirectory) {
+            size_t idx=path.find_last_of('/',path.length()-2);
+            string pnm=path;
+            Sync::Item it(Sync::Item::FS);
+            it.directory=true;
+            it.empty=false;
+            if (idx!=string::npos){
+                pnm=path.substr(idx+1,path.length()-idx-2);
+                path=path.substr(0,idx+1);
+            }else{
+                path="";
+            }
+            it.name=pnm;
+            dirs[""][pnm]=it;
+            pth=pnm;
+        }
+        scanDir(pth);
         return 0;
     }
     

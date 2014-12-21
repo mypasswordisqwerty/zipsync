@@ -24,7 +24,8 @@ Sync::SyncFlags flags={
     true,   // bool ignoreHiddens;
     false,  // bool verbose;
     false,  // bool addEmptyDirs;
-    false   // bool store;
+    false,   // bool store;
+    false   // bool rootDirectory;
 };
 
 int usage(){
@@ -38,6 +39,7 @@ int usage(){
     "\t-d,--nodate\t\t- do not compare dates\n" <<
     "\t-h,--help\t\t- this help message\n" <<
     "\t-p,--hiddens\t\t- include hidden files\n" <<
+    "\t-r,--root\t\t- add root directory to archive\n" <<
     "\t-s,--store\t\t- do not compress files in zip\n" <<
     "\t-v,--verbose\t\t- verbose output\n";
     return 1;
@@ -64,12 +66,13 @@ int parseParams(int argc, const char ** argv){
         {"hiddens", no_argument,       0, 'p'},
         {"empty", no_argument,       0, 'e'},
         {"store", no_argument,       0, 's'},
+        {"root", no_argument,       0, 'r'},
         {0, 0, 0, 0}
     };
     int option_index = 0;
     int c=0;
     while(1){
-        c=getopt_long(argc, (char * const *)argv, "hvdcpe",long_options, &option_index);
+        c=getopt_long(argc, (char * const *)argv, "hvdcpesr",long_options, &option_index);
         if (c==-1)
             break;
         switch (c){
@@ -89,6 +92,12 @@ int parseParams(int argc, const char ** argv){
                 break;
             case 'e':
                 flags.addEmptyDirs=true;
+                break;
+            case 's':
+                flags.store=true;
+                break;
+            case 'r':
+                flags.rootDirectory=true;
                 break;
             case '?':
                 return 2;

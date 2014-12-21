@@ -16,10 +16,6 @@
 #include <zlib.h>
 using namespace std;
 
-//#ifndef _DARWIN_USE_64_BIT_INODE
-//# define _DARWIN_USE_64_BIT_INODE 1
-//#endif
-
 namespace zipsync{
 
     class Sync{
@@ -31,6 +27,7 @@ namespace zipsync{
             bool verbose;
             bool addEmptyDirs;
             bool store;
+            bool rootDirectory;
         };
         struct Item{
             enum Type {FS, ZIP};
