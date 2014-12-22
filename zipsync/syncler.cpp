@@ -54,32 +54,34 @@ namespace zipsync {
                 verbose("%ld -> %ld",dst.size,src.size);
                 break;
             }
+            bool compcrc=flags.compareCRC;
             if (flags.compareDate){
                 verbose("date ");
                 //crooked nail: some mtimes in zip are mtimes-1
                 if (abs(src.date-dst.date)>1){
-                    verbose("%ld -> %ld",dst.date,src.date);
-                    break;
+                    if (!flags.modifiedCrc){
+                        verbose("%ld -> %ld",dst.date,src.date);
+                        break;
+                    }
+                    compcrc=true;
                 }
             }
-            if (flags.compareCRC){
+            if (compcrc){
                 verbose("crc ");
                 uLong c1=0,c2=0;
                 c1=from->getCRC(src);
                 c2=to->getCRC(dst);
                 if (c1!=c2){
-                    verbose("%d -> %d",c2,c1);
+                    verbose("%lu -> %lu",c2,c1);
                     break;
                 }
             }
             upd=false;
         }while(0);
+        verbose("\n");
         if (upd){
-            verbose("\n");
             cout << "U " << src.path << src.name << endl;
             CHECKRES(to->updateItem(dst, from->getTransfer(src)));
-        }else{
-            verbose("\n");
         }
         return 0;
     }

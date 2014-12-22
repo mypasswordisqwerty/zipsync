@@ -28,6 +28,7 @@ namespace zipsync{
             bool addEmptyDirs;
             bool store;
             bool rootDirectory;
+            bool modifiedCrc;
         };
         struct Item{
             enum Type {FS, ZIP};

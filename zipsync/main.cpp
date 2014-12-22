@@ -25,7 +25,8 @@ Sync::SyncFlags flags={
     false,  // bool verbose;
     false,  // bool addEmptyDirs;
     false,   // bool store;
-    false   // bool rootDirectory;
+    false,   // bool rootDirectory;
+    false   //bool modifiedCrc;
 };
 
 int usage(){
@@ -36,12 +37,13 @@ int usage(){
     "\tdst\t\t- destination directory or zip\n\n" <<
     "options:\n" <<
     "\t-c,--crc\t\t- compare crc32\n" <<
-    "\t-d,--nodate\t\t- do not compare dates\n" <<
     "\t-h,--help\t\t- this help message\n" <<
     "\t-p,--hiddens\t\t- include hidden files\n" <<
     "\t-r,--root\t\t- add root directory to archive\n" <<
     "\t-s,--store\t\t- do not compress files in zip\n" <<
-    "\t-v,--verbose\t\t- verbose output\n";
+    "\t-t,--notime\t\t- do not compare mtime\n" <<
+    "\t-v,--verbose\t\t- verbose output\n" <<
+    "\t-x,--modcrc\t\t- check crc of mtime-differs files\n";
     return 1;
 }
 
@@ -61,18 +63,19 @@ int parseParams(int argc, const char ** argv){
     {
         {"help", no_argument,       0, 'h'},
         {"verbose", no_argument,       0, 'v'},
-        {"nodate", no_argument,       0, 'd'},
+        {"notime", no_argument,       0, 't'},
         {"crc", no_argument,       0, 'c'},
         {"hiddens", no_argument,       0, 'p'},
         {"empty", no_argument,       0, 'e'},
         {"store", no_argument,       0, 's'},
         {"root", no_argument,       0, 'r'},
+        {"modcrc", no_argument,       0, 'x'},
         {0, 0, 0, 0}
     };
     int option_index = 0;
     int c=0;
     while(1){
-        c=getopt_long(argc, (char * const *)argv, "hvdcpesr",long_options, &option_index);
+        c=getopt_long(argc, (char * const *)argv, "hvtcpesrx",long_options, &option_index);
         if (c==-1)
             break;
         switch (c){
@@ -81,7 +84,7 @@ int parseParams(int argc, const char ** argv){
             case 'v':
                 flags.verbose=true;
                 break;
-            case 'd':
+            case 't':
                 flags.compareDate=false;
                 break;
             case 'c':
@@ -98,6 +101,9 @@ int parseParams(int argc, const char ** argv){
                 break;
             case 'r':
                 flags.rootDirectory=true;
+                break;
+            case 'x':
+                flags.modifiedCrc=true;
                 break;
             case '?':
                 return 2;

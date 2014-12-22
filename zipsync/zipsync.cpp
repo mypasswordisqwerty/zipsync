@@ -233,15 +233,14 @@ namespace zipsync {
     
     
     int ZipSync::removeItem(const Sync::Item& item){
-        FileDesc* desc=(FileDesc*)item.data;
-        if (!desc){
-            map<string,Sync::Item>& ins=dirs[item.path+item.name+"/"];
-            for (auto it=ins.begin(); it!=ins.end(); ++it){
-                removeItem(it->second);
-                it->second.removed=true;
-            }
-            return 0;
+        map<string,Sync::Item>& ins=dirs[item.path+item.name+"/"];
+        for (auto it=ins.begin(); it!=ins.end(); ++it){
+            removeItem(it->second);
+            it->second.removed=true;
         }
+        FileDesc* desc=(FileDesc*)item.data;
+        if (!desc)
+            return 0;
         
 #if REPLACE_DELETED==1
         
